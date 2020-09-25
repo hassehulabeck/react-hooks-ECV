@@ -1,22 +1,24 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import ReactDOM from "react-dom";
 import "./index.css";
 
-function Multiplikator() {
-    const [numbers, setNumbers] = useState([4, 3]);
-    const [produkt, setProdukt] = useState(0);
+function Firstname() {
+    const [firstname, setFirstname] = useState("Rune");
+
+    const onSubmit = (e) => {
+        e.preventDefault();
+        setFirstname(e.target.firstname.value);
+    };
 
     return (
         <div>
-            <p>
-                {numbers[0]} och {numbers[1]}
-            </p>
-            <p>{produkt}</p>
-            <button onClick={() => setProdukt(numbers[0] * numbers[1])}>
-                Multiplicera
-            </button>
+            <p>{firstname}</p>
+            <form onSubmit={onSubmit}>
+                <input type="text" name="firstname" />
+                <input type="submit" value="Ändra namn" />
+            </form>
         </div>
     );
 }
 
-ReactDOM.render(<Multiplikator />, document.getElementById("root"));
+ReactDOM.render(<Firstname />, document.getElementById("root"));
