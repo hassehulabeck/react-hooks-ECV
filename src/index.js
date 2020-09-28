@@ -2,8 +2,8 @@ import React, { useState, useEffect } from "react";
 import ReactDOM from "react-dom";
 import "./index.css";
 
-function Firstname() {
-    const [firstname, setFirstname] = useState("Rune");
+function Firstname(props) {
+    const [firstname, setFirstname] = useState(props.firstname);
 
     const onSubmit = (e) => {
         e.preventDefault();
@@ -21,4 +21,7 @@ function Firstname() {
     );
 }
 
-ReactDOM.render(<Firstname />, document.getElementById("root"));
+ReactDOM.render(
+    <Firstname firstname="Rune" />,
+    document.getElementById("root")
+);
