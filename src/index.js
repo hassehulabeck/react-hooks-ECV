@@ -33,7 +33,7 @@ const CountryList = () => {
                 <button onClick={() => setCounter(counter + 1)}>
                     Öka counter
                 </button>
-                <ul>
+                <ol>
                     {error ? (
                         <li>{error.message}</li>
                     ) : (
@@ -43,11 +43,12 @@ const CountryList = () => {
                             </li>
                         ))
                     )}
-                </ul>
+                </ol>
             </div>
         );
     } else {
         return <div>Laddar...</div>;
     }
 };
+
 ReactDOM.render(<CountryList />, document.getElementById("root"));
