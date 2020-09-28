@@ -1,38 +1,53 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import ReactDOM from "react-dom";
-import "./index.css";
+import axios from "axios";
 
-function Firstname(props) {
-    const [firstname, setFirstname] = useState(props.firstname);
+const CountryList = () => {
+    const [countries, setCountries] = useState([]);
+    const [load, setLoad] = useState(false);
+    const [error, setError] = useState("");
+    const [counter, setCounter] = useState(0);
 
-    const nameSubmitted = (e) => {
-        e.preventDefault();
-        setFirstname(e.target.firstname.value);
-    };
+    useEffect(() => {
+        axios
+            .get("https://restcountries.eu/rest/v2/all")
+            .then((res) => {
+                res.data.sort((a, b) => {
+                    return b.population - a.population;
+                });
+                setLoad(true);
+                setCountries(res.data);
+                console.log("Laddar listan");
+            })
+            .catch((err) => {
+                setError(err.message);
+                setLoad(true);
+            });
+    }, []);
+    // Tom array innebär att useEffect bara körs en gång - vid sidans laddning.
 
-    const nameChanger = (e) => {
-        if (e.target.value.length > 3) {
-            firstname = e.target.value;
-            setFirstname(e.target.value);
-        }
-    };
-
-    return (
-        <div>
-            <p>{firstname}</p>
-            <form onSubmit={nameSubmitted}>
-                <input
-                    type="text"
-                    name="firstname"
-                    onChange={(e) => nameChanger(e)}
-                />
-                <input type="submit" value="Ändra namn" />
-            </form>
-        </div>
-    );
-}
-
-ReactDOM.render(
-    <Firstname firstname="Rune" />,
-    document.getElementById("root")
-);
+    if (load) {
+        return (
+            <div>
+                <p>Antal klick: {counter}</p>
+                <button onClick={() => setCounter(counter + 1)}>
+                    Öka counter
+                </button>
+                <ul>
+                    {error ? (
+                        <li>{error.message}</li>
+                    ) : (
+                        countries.map((country, index) => (
+                            <li key={index}>
+                                {country.name} ({country.population})
+                            </li>
+                        ))
+                    )}
+                </ul>
+            </div>
+        );
+    } else {
+        return <div>Laddar...</div>;
+    }
+};
+ReactDOM.render(<CountryList />, document.getElementById("root"));
