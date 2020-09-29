@@ -12,9 +12,6 @@ const CountryList = () => {
         axios
             .get("https://restcountries.eu/rest/v2/all")
             .then((res) => {
-                res.data.sort((a, b) => {
-                    return b.population - a.population;
-                });
                 setLoad(true);
                 setCountries(res.data);
                 console.log("Laddar listan");
@@ -26,13 +23,19 @@ const CountryList = () => {
     }, []);
     // Tom array innebär att useEffect bara körs en gång - vid sidans laddning.
 
+    const sortCountries = () => {
+        let sCountries = [...countries];
+        sCountries.sort((a, b) => {
+            return b.population - a.population;
+        });
+        setCountries(sCountries);
+    };
+
     if (load) {
         return (
             <div>
                 <p>Antal klick: {counter}</p>
-                <button onClick={() => setCounter(counter + 1)}>
-                    Öka counter
-                </button>
+                <button onClick={sortCountries}>Sortera</button>
                 <ol>
                     {error ? (
                         <li>{error.message}</li>
