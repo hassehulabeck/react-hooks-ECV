@@ -1,57 +1,27 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import ReactDOM from "react-dom";
-import axios from "axios";
+import { UserContext, User } from "./usercontext";
 
-const CountryList = () => {
-    const [countries, setCountries] = useState([]);
-    const [load, setLoad] = useState(false);
-    const [error, setError] = useState("");
-    const [counter, setCounter] = useState(0);
+const Page = () => {
+    return (
+        <UserContext.Consumer>
+            {() => <Userprofile user={User} />}
+        </UserContext.Consumer>
+    );
+};
 
-    useEffect(() => {
-        axios
-            .get("https://restcountries.eu/rest/v2/all")
-            .then((res) => {
-                setLoad(true);
-                setCountries(res.data);
-                console.log("Laddar listan");
-            })
-            .catch((err) => {
-                setError(err.message);
-                setLoad(true);
-            });
-    }, []);
-    // Tom array innebär att useEffect bara körs en gång - vid sidans laddning.
-
-    const sortCountries = () => {
-        let sCountries = [...countries];
-        sCountries.sort((a, b) => {
-            return b.population - a.population;
-        });
-        setCountries(sCountries);
-    };
-
-    if (load) {
+const Userprofile = (props) => {
+    if (props.user.isAdmin) {
+        return <p>User {props.user.name} is an admin.</p>;
+    } else {
         return (
             <div>
-                <p>Antal klick: {counter}</p>
-                <button onClick={sortCountries}>Sortera</button>
-                <ol>
-                    {error ? (
-                        <li>{error.message}</li>
-                    ) : (
-                        countries.map((country, index) => (
-                            <li key={index}>
-                                {country.name} ({country.population})
-                            </li>
-                        ))
-                    )}
-                </ol>
+                <p>
+                    {props.user.name} has {props.user.credits} credits.
+                </p>
             </div>
         );
-    } else {
-        return <div>Laddar...</div>;
     }
 };
 
-ReactDOM.render(<CountryList />, document.getElementById("root"));
+ReactDOM.render(<Page />, document.getElementById("root"));
